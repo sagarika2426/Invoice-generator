@@ -36,7 +36,7 @@ export default function InvoiceTotals({ items }: TotalsProps) {
   const roundOff = +(roundedTotal - subtotal).toFixed(2);
 
   return (
-    <div className="bg-white p-6 rounded-xl shadow-sm max-w-2xl mx-auto mt-8 space-y-2 text-sm text-gray-800">
+    <div className=" p-6 rounded-xl shadow-sm max-w-2xl mx-auto mt-8 space-y-2 text-sm text-gray-800">
       <div className="flex justify-between">
         <span className="text-gray-600">Basic Amount</span>
         <span>₹{basicAmount.toFixed(2)}</span>

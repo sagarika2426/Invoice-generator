@@ -21,7 +21,7 @@ export default function AddressBlock({ address, setAddress }: { address: Address
   };
 
   return (
-    <div className="bg-white p-6 rounded-xl shadow-sm space-y-6 max-w-4xl mx-auto">
+    <div className=" p-6 rounded-xl shadow-sm space-y-6 max-w-4xl mx-auto">
       <div>
         <h2 className="text-base font-semibold text-gray-700 mb-4 border-b pb-2">Bill To</h2>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
