@@ -43,118 +43,128 @@ export default function ItemTable({ items, setItems }) {
   // };
 
   return (
-    <div className="p-4">
-      <table className="min-w-full border border-gray-300 text-sm">
-        <thead className="bg-gray-100">
-          <tr>
-            <th className="border p-2">Description</th>
-            <th className="border p-2">HSN</th>
-            <th className="border p-2">Qty</th>
-            <th className="border p-2">UOM</th>
-            <th className="border p-2">Rate</th>
-                        <th className="border p-2">Amount</th>
+   <div className="p-6 bg-white rounded-xl shadow-sm space-y-4 max-w-6xl mx-auto border border-gray-100 overflow-x-auto">
+  <h2 className="text-lg font-bold text-gray-800 border-b pb-2">Invoice Items</h2>
 
-            <th className="border p-2">GST Type</th>
-            <th className="border p-2">GST Rate</th>
-            <th className="border p-2">IGST</th>
-            <th className="border p-2">CGST</th>
-            <th className="border p-2">SGST</th>
-            {/* <th className="border p-2">Action</th> */}
+  <table className="min-w-full border border-gray-200 text-sm rounded-xl overflow-hidden">
+    <thead className="bg-gray-100 text-gray-700 text-xs uppercase">
+      <tr>
+        <th className="border px-3 py-2 text-left">Description</th>
+        <th className="border px-3 py-2">HSN</th>
+        <th className="border px-3 py-2">Qty</th>
+        <th className="border px-3 py-2">UOM</th>
+        <th className="border px-3 py-2">Rate</th>
+        <th className="border px-3 py-2 text-right">Amount</th>
+        <th className="border px-3 py-2">GST Type</th>
+        <th className="border px-3 py-2">GST Rate</th>
+        <th className="border px-3 py-2 text-right">IGST</th>
+        <th className="border px-3 py-2 text-right">CGST</th>
+        <th className="border px-3 py-2 text-right">SGST</th>
+      </tr>
+    </thead>
+    <tbody>
+      {items.map((item) => {
+        const amount = item.quantity * item.rate;
+        const gstAmount = (amount * item.gstRate) / 100;
+        const igst = item.gstType === "IGST" ? gstAmount : 0;
+        const cgst = item.gstType === "CGST+SGST" ? gstAmount / 2 : 0;
+        const sgst = item.gstType === "CGST+SGST" ? gstAmount / 2 : 0;
+
+        return (
+          <tr key={item.id} className="even:bg-gray-50">
+            <td className="border p-2">
+              <input
+                className="w-full border border-gray-300 rounded px-2 py-1 focus:outline-none focus:ring-1 focus:ring-blue-500"
+                value={item.description}
+                onChange={(e) => handleChange(item.id, "description", e.target.value)}
+              />
+            </td>
+            <td className="border p-2">
+              <input
+                className="w-full border border-gray-300 rounded px-2 py-1 focus:outline-none focus:ring-1 focus:ring-blue-500"
+                value={item.hsn}
+                onChange={(e) => handleChange(item.id, "hsn", e.target.value)}
+              />
+            </td>
+            <td className="border p-2">
+              <input
+                type="number"
+                className="w-full border border-gray-300 rounded px-2 py-1 focus:outline-none focus:ring-1 focus:ring-blue-500"
+                value={item.quantity}
+                onChange={(e) => handleChange(item.id, "quantity", e.target.value)}
+              />
+            </td>
+            <td className="border p-2">
+              <input
+                className="w-full border border-gray-300 rounded px-2 py-1 focus:outline-none focus:ring-1 focus:ring-blue-500"
+                value={item.uom}
+                onChange={(e) => handleChange(item.id, "uom", e.target.value)}
+              />
+            </td>
+            <td className="border p-2">
+              <input
+                type="number"
+                className="w-full border border-gray-300 rounded px-2 py-1 focus:outline-none focus:ring-1 focus:ring-blue-500"
+                value={item.rate}
+                onChange={(e) => handleChange(item.id, "rate", e.target.value)}
+              />
+            </td>
+
+            <td className="border p-2 text-right text-gray-800 font-medium">
+              ₹ {amount.toFixed(2)}
+            </td>
+
+            <td className="border p-2">
+              <select
+                className="w-full border border-gray-300 rounded px-2 py-1 bg-white focus:outline-none focus:ring-1 focus:ring-blue-500"
+                value={item.gstType}
+                onChange={(e) => handleChange(item.id, "gstType", e.target.value)}
+              >
+                <option value="IGST">IGST</option>
+                <option value="CGST+SGST">CGST+SGST</option>
+              </select>
+            </td>
+
+            <td className="border p-2">
+              <select
+                className="w-full border border-gray-300 rounded px-2 py-1 bg-white focus:outline-none focus:ring-1 focus:ring-blue-500"
+                value={item.gstRate}
+                onChange={(e) => handleChange(item.id, "gstRate", e.target.value)}
+              >
+                {gstRates[item.gstType].map((rate) => (
+                  <option key={rate} value={rate}>
+                    {item.gstType === "IGST"
+                      ? `${rate}%`
+                      : `${rate / 2}% + ${rate / 2}%`}
+                  </option>
+                ))}
+              </select>
+            </td>
+
+            <td className="border p-2 text-right text-gray-700">
+              ₹ {igst.toFixed(2)}
+            </td>
+            <td className="border p-2 text-right text-gray-700">
+              ₹ {cgst.toFixed(2)}
+            </td>
+            <td className="border p-2 text-right text-gray-700">
+              ₹ {sgst.toFixed(2)}
+            </td>
           </tr>
-        </thead>
-        <tbody>
-          {items.map((item) => {
-            const amount = item.quantity * item.rate;
-            const gstAmount = (amount * item.gstRate) / 100;
-            const igst = item.gstType === 'IGST' ? gstAmount : 0;
-            const cgst = item.gstType === 'CGST+SGST' ? gstAmount / 2 : 0;
-            const sgst = item.gstType === 'CGST+SGST' ? gstAmount / 2 : 0;
+        );
+      })}
+    </tbody>
+  </table>
 
-            return (
-              <tr key={item.id}>
-                <td className="border p-2">
-                  <input
-                    className="w-full border px-2 py-1"
-                    value={item.description}
-                    onChange={(e) => handleChange(item.id, "description", e.target.value)}
-                  />
-                </td>
-                <td className="border p-2">
-                  <input
-                    className="w-full border px-2 py-1"
-                    value={item.hsn}
-                    onChange={(e) => handleChange(item.id, "hsn", e.target.value)}
-                  />
-                </td>
-                <td className="border p-2">
-                  <input
-                    type="number"
-                    className="w-full border px-2 py-1"
-                    value={item.quantity}
-                    onChange={(e) => handleChange(item.id, "quantity", e.target.value)}
-                  />
-                </td>
-                <td className="border p-2">
-                  <input
-                    className="w-full border px-2 py-1"
-                    value={item.uom}
-                    onChange={(e) => handleChange(item.id, "uom", e.target.value)}
-                  />
-                </td>
-                <td className="border p-2">
-                  <input
-                    type="number"
-                    className="w-full border px-2 py-1"
-                    value={item.rate}
-                    onChange={(e) => handleChange(item.id, "rate", e.target.value)}
-                  />
-                </td>
-                                <td className="border p-2 text-right">₹ {amount.toFixed(2)}</td>
+  <div className="mt-4">
+    <button
+      onClick={addRow}
+      className="bg-blue-600 text-white px-5 py-2 rounded hover:bg-blue-700 transition font-medium"
+    >
+      + Add Item
+    </button>
+  </div>
+</div>
 
-                <td className="border p-2">
-                  <select
-                    className="w-full border px-2 py-1"
-                    value={item.gstType}
-                    onChange={(e) => handleChange(item.id, "gstType", e.target.value)}
-                  >
-                    <option value="IGST">IGST</option>
-                    <option value="CGST+SGST">CGST+SGST</option>
-                  </select>
-                </td>
-                <td className="border p-2">
-                  <select
-                    className="w-full border px-2 py-1"
-                    value={item.gstRate}
-                    onChange={(e) => handleChange(item.id, "gstRate", e.target.value)}
-                  >
-                    {gstRates[item.gstType].map((rate) => (
-                      <option key={rate} value={rate}>
-                        {item.gstType === 'IGST' ? `${rate}%` : `${rate / 2}% + ${rate / 2}%`}
-                      </option>
-                    ))}
-                  </select>
-                </td>
-                <td className="border p-2 text-right">₹ {igst.toFixed(2)}</td>
-                <td className="border p-2 text-right">₹ {cgst.toFixed(2)}</td>
-                <td className="border p-2 text-right">₹ {sgst.toFixed(2)}</td>
-                {/* <td className="border p-2 text-center">
-                  <button onClick={() => deleteRow(item.id)} className="text-red-600">Delete</button>
-                </td> */}
-              </tr>
-            );
-          })}
-        </tbody>
-      </table>
-      <div className="mt-4">
-        <button
-          onClick={addRow}
-          className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
-        >
-          Add Item
-        </button>
-      </div>
-
-
-    </div>
   );
 }

@@ -1,4 +1,5 @@
-import React from "react";
+"use client";
+import React, { useRef } from "react";
 import image from "../public/image.png";
 
 const dummyInvoice = {
@@ -87,45 +88,63 @@ const InvoiceView = () => {
   const invoice = dummyInvoice;
 
   return (
-    <div
-      className="min-h-screen bg-gray-100 py-10 flex justify-center"
-   style={{
-    backgroundImage: `url('/image.png')`,
-    backgroundRepeat: 'no-repeat',
-    backgroundSize: 'contain',
-    backgroundPosition: 'top',
-    // minHeight: '100vh',
-  }}
-    >
+    <div className="min-h-screen bg-gray-100 py-10 flex justify-center">
       {" "}
-      <div className=" shadow-2xl rounded-lg max-w-5xl w-full px-10 py-8 text-sm font-sans">
+      <div
+        className=" shadow-2xl rounded-lg max-w-5xl w-full px-10 py-8 text-sm"
+        style={{
+          backgroundImage: `url('/image.png')`,
+          backgroundRepeat: "no-repeat",
+          backgroundSize: "cover",
+          backgroundPosition: "top",
+          minHeight: "100vh",
+          height: "1500px",
+        }}
+      >
         {/* Header */}
+        <div className="flex justify-between mb-6 border-b pb-4 border-gray-200 mt-32">
+          <div className="text-blue-900 font-semibold space-y-1">
+            <p>
+              Invoice No: <span className="font-bold">{invoice.invoiceId}</span>
+            </p>
+            <p>
+              Invoice Date:{" "}
+              <span className="font-bold">{invoice.invoiceId}</span>
+            </p>
+          </div>
+          <div className="text-right text-gray-700">
+            <p>Po No: 1231</p>
+            <p>Po Date: 01-01-2023</p>
+          </div>
+        </div>
 
-        {/* Address Section */}
-        <div className="grid grid-cols-2 mb-8 gap-8">
+        {/* Bill To & Ship To */}
+        <div className="grid grid-cols-2 gap-8 mb-10">
           <div>
-            <p className="text-gray-500 font-semibold mb-1">Bill To</p>
-            <div className="border p-3 rounded-md">
-              <p className="font-medium text-gray-800">
+            <div className="text-gray-600 font-semibold mb-1">Bill To</div>
+            <div className="border-l-4 border-blue-700 bg-blue-50 p-4 rounded-lg shadow-inner">
+              <p className="font-medium text-blue-900">
                 {invoice.address.company}
               </p>
-              <p className="text-gray-600">{invoice.address.address}</p>
-              <p className="text-gray-600">Phone: {invoice.address.phone}</p>
-              <p className="text-gray-600">GSTIN: {invoice.address.gstin}</p>
+              <p>{invoice.address.address}</p>
+              <p>Phone: {invoice.address.phone}</p>
+              <p>GSTIN: {invoice.address.gstin}</p>
             </div>
           </div>
           <div>
-            <p className="text-gray-500 font-semibold mb-1">Ship To</p>
-            <div className="border p-3 rounded-md">
-              <p className="text-gray-800">{invoice.address.shipTo}</p>
+            <div className="text-gray-600 font-semibold mb-1">Ship To</div>
+            <div className="border-l-4 border-green-600 bg-green-50 p-4 rounded-lg shadow-inner">
+              <p className="font-medium text-green-900">
+                {invoice.address.shipTo}
+              </p>
             </div>
           </div>
         </div>
 
         {/* Items Table */}
-        <div className="overflow-x-auto text-sm">
-          <table className="min-w-full table-auto border border-gray-200">
-            <thead className="bg-blue-50 border-b border-gray-300 text-blue-800 text-xs uppercase">
+        <div className="overflow-x-auto text-sm mb-10">
+          <table className="min-w-full table-auto border border-gray-300 bg-white rounded-xl shadow">
+            <thead className="bg-blue-200 text-blue-900 text-xs uppercase border-b border-blue-300">
               <tr>
                 <th className="py-2 px-2 border">#</th>
                 <th className="py-2 px-3 border text-left">Description</th>
@@ -143,7 +162,10 @@ const InvoiceView = () => {
             </thead>
             <tbody>
               {invoice.items.map((item, idx) => (
-                <tr key={item.id} className="text-gray-700 border-b">
+                <tr
+                  key={item.id}
+                  className={idx % 2 === 0 ? "bg-white" : "bg-blue-50"}
+                >
                   <td className="py-2 px-2 border text-center">{idx + 1}</td>
                   <td className="py-2 px-3 border">{item.description}</td>
                   <td className="py-2 px-3 border text-center">{item.hsn}</td>
@@ -161,47 +183,114 @@ const InvoiceView = () => {
                   <td className="py-2 px-3 border text-right">₹{item.cgst}</td>
                   <td className="py-2 px-3 border text-right">₹{item.sgst}</td>
                   <td className="py-2 px-3 border text-right">₹{item.igst}</td>
-                  <td className="py-2 px-3 border text-right font-medium">
+                  <td className="py-2 px-3 border text-right">
                     ₹{item.totalItemgst}
                   </td>
                 </tr>
               ))}
             </tbody>
+            <tfoot>
+              <tr className="font-semibold bg-blue-100">
+                <td colSpan={6} className="py-2 px-3 border text-right">
+                  Totals
+                </td>
+                <td className="py-2 px-3 border text-right">
+                  ₹{invoice.totals.basicAmount}
+                </td>
+                <td className="py-2 px-3 border text-center">—</td>
+                <td className="py-2 px-3 border text-right">
+                  ₹{invoice.totals.totalCGST}
+                </td>
+                <td className="py-2 px-3 border text-right">
+                  ₹{invoice.totals.totalSGST}
+                </td>
+                <td className="py-2 px-3 border text-right">
+                  ₹{invoice.totals.totalIGST}
+                </td>
+                <td className="py-2 px-3 border text-center">—</td>
+              </tr>
+            </tfoot>
           </table>
         </div>
 
         {/* Totals */}
-        <div className="mt-10 flex justify-end">
-          <div className="w-full max-w-md text-sm">
-            <div className="flex justify-between py-1 border-t border-gray-300">
-              <span>Basic Amount</span>
-              <span>₹{invoice.totals.basicAmount}</span>
+        <div className="flex justify-between mb-10">
+          <div className="mb-12 w-1/2">
+            <div className="text-gray-600 font-semibold mb-1">Bank Details</div>
+            <div className="border-l-4 border-yellow-500 bg-yellow-50 p-4 rounded-lg shadow-inner text-sm space-y-2">
+              <div className="flex justify-between text-yellow-900 font-medium">
+                <span>Beneficiary Name::</span>{" "}
+                <span>SAPTARISHI INNOVATION LLP</span>
+              </div>
+
+              <div className="flex justify-between text-yellow-900 font-medium">
+                <span>Account Number:</span> <span>251882580702</span>
+              </div>
+              <div className="flex justify-between text-yellow-900 font-medium">
+                <span>IFSC:</span> <span>INDB0001536</span>
+              </div>
+              <div className="flex justify-between text-yellow-900 font-medium">
+                <span>Bank Name:</span> <span>INDUSIND BANK</span>
+              </div>
+              <div className="flex justify-between text-yellow-900 font-medium">
+                <span>Branch:</span> <span>BHANDUP WEST</span>
+              </div>
             </div>
-            <div className="flex justify-between py-1">
+          </div>
+          <div className="w-full max-w-xs space-y-2 text-sm bg-blue-50 rounded-lg p-4 border border-blue-200 shadow">
+            <div className="flex justify-between">
+              <span className="font-semibold">Basic Amount</span>
+              <span className="font-semibold text-blue-900">
+                ₹{invoice.totals.basicAmount}
+              </span>
+            </div>
+            <div className="flex justify-between">
               <span>CGST Total</span>
               <span>₹{invoice.totals.totalCGST}</span>
             </div>
-            <div className="flex justify-between py-1">
+            <div className="flex justify-between">
               <span>SGST Total</span>
               <span>₹{invoice.totals.totalSGST}</span>
             </div>
-            <div className="flex justify-between py-1">
+            <div className="flex justify-between">
               <span>IGST Total</span>
               <span>₹{invoice.totals.totalIGST}</span>
             </div>
-            <div className="flex justify-between py-1 font-semibold">
+            <div className="flex justify-between font-semibold">
               <span>Subtotal</span>
-              <span>₹{invoice.totals.subtotal}</span>
+              <span className="text-blue-900 font-semibold">
+                ₹{invoice.totals.subtotal}
+              </span>
             </div>
-            <div className="flex justify-between py-1">
+            <div className="flex justify-between">
               <span>Round Off</span>
               <span>₹{invoice.totals.roundOff}</span>
             </div>
-            <div className="flex justify-between py-2 border-t mt-2 font-bold text-lg text-blue-800">
+            <div className="flex justify-between border-t border-blue-300 pt-2 font-bold text-lg text-blue-900">
               <span>Total</span>
               <span>₹{invoice.totals.roundedTotal}</span>
             </div>
           </div>
+        </div>
+
+        {/* Bank Details After Totals */}
+
+        {/* Declaration and Terms */}
+        <div className="bg-gray-50 p-6 rounded-xl shadow-inner border border-gray-200 mb-2">
+          <h3 className="font-semibold text-gray-700 mb-3 uppercase">
+            Declaration
+          </h3>
+          <p className="text-gray-700 text-xs mb-4">
+            We declare that this invoice shows the actual price of the goods &
+            services described.
+          </p>
+          <h3 className="font-semibold text-gray-700 mb-3 uppercase">Terms</h3>
+          <ul className="list-disc list-inside text-gray-700 text-xs">
+            <li>Payment: 100% ADVANCE</li>
+            <li>
+              Guarantee doesn’t cover mishandling of components after delivery
+            </li>
+          </ul>
         </div>
       </div>
     </div>
