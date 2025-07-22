@@ -38,10 +38,6 @@ export default function ItemTable({ items, setItems }) {
     setItems([...items, { id: newId, description: "", hsn: "", quantity: 0, uom: "", rate: 0, gstRate: 0, gstType: 'IGST' }]);
   };
 
-  // const deleteRow = (id: number) => {
-  //   setItems(items.filter((item) => item.id !== id));
-  // };
-
   return (
    <div className="p-6 bg-white rounded-xl shadow-sm space-y-4 max-w-6xl mx-auto border border-gray-100 overflow-x-auto">
   <h2 className="text-lg font-bold text-gray-800 border-b pb-2">Invoice Items</h2>
